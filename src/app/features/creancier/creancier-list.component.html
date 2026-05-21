@@ -1,44 +1,147 @@
-<div style="padding: 24px; background: #fff; min-height: 100vh;">
-  <h2 style="margin-bottom: 20px;">Liste des Créanciers</h2>
+<div class="page-container">
+  
+  <div style="display: flex; align-items: center; margin-bottom: 24px;">
+    <h2 class="page-title" style="margin: 0; font-size: 24px; font-weight: 500; color: #1f2937;">
+      <i nz-icon nzType="solution" nzTheme="outline" style="margin-right: 8px;"></i>
+      Gestion des Créanciers
+    </h2>
+  </div>
 
-  <nz-table 
-    #basicTable 
-    [nzData]="creanciers" 
-    [nzBordered]="true" 
-    nzSize="middle"
-    [nzPageSize]="10">
-    
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Type</th>
-        <th>ICE</th>
-        <th>Banque</th>
-        <th>RIB</th>
-        <th>Email</th>
-        <th>Téléphone</th>
-        <th>Date de Création</th>
-      </tr>
-    </thead>
-    
-    <tbody>
-      @for (data of basicTable.data; track data.id) {
+  <nz-card nzTitle="Ajouter un Créancier" [nzBordered]="true" class="form-card" style="margin-bottom: 24px; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+    <form nz-form [formGroup]="validateForm" nzLayout="vertical" (ngSubmit)="submitForm()">
+      <div nz-row [nzGutter]="[16, 16]">
+        
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired>Nom</nz-form-label>
+            <nz-form-control nzErrorTip="Veuillez saisir le nom!">
+              <nz-input-group nzPrefixIcon="user">
+                <input nz-input formControlName="nom" placeholder="Ex: Maroc Telecom" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired>Type</nz-form-label>
+            <nz-form-control nzErrorTip="Veuillez sélectionner un type!">
+              <nz-select formControlName="typeCreancier" nzPlaceHolder="Sélectionnez le type">
+                <nz-option nzValue="IAM" nzLabel="IAM"></nz-option>
+                <nz-option nzValue="BANQUE" nzLabel="BANQUE"></nz-option>
+                <nz-option nzValue="ONEE" nzLabel="ONEE"></nz-option>
+                <nz-option nzValue="CLINIQUE" nzLabel="CLINIQUE"></nz-option>
+                <nz-option nzValue="AUTRE" nzLabel="AUTRE"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label nzRequired>ICE</nz-form-label>
+            <nz-form-control nzErrorTip="Veuillez saisir l'ICE!">
+              <nz-input-group nzPrefixIcon="idcard">
+                <input nz-input formControlName="ice" placeholder="Ex: 00000000000000" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Banque</nz-form-label>
+            <nz-form-control>
+              <nz-input-group nzPrefixIcon="bank">
+                <input nz-input formControlName="banque" placeholder="Ex: Attijariwafa Bank" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>RIB</nz-form-label>
+            <nz-form-control>
+              <nz-input-group nzPrefixIcon="number">
+                <input nz-input formControlName="rib" placeholder="24 chiffres" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Email</nz-form-label>
+            <nz-form-control nzErrorTip="Email invalide!">
+              <nz-input-group nzPrefixIcon="mail">
+                <input nz-input formControlName="email" type="email" placeholder="contact@creancier.ma" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+          <nz-form-item>
+            <nz-form-label>Téléphone</nz-form-label>
+            <nz-form-control>
+              <nz-input-group nzPrefixIcon="phone">
+                <input nz-input formControlName="telephone" placeholder="Ex: 0537000000" />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+      </div>
+
+      <div style="text-align: right; margin-top: 16px;">
+        <button nz-button nzType="primary" style="border-radius: 4px; display: inline-flex; align-items: center; justify-content: center;">
+          <i nz-icon nzType="save" style="margin-right: 8px;"></i>
+          Enregistrer le Créancier
+        </button>
+      </div>
+    </form>
+  </nz-card>
+
+  <nz-card nzTitle="Liste des Créanciers" [nzBordered]="true" class="table-card" style="border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+    <nz-table 
+      #basicTable 
+      [nzData]="creanciers" 
+      [nzBordered]="false" 
+      nzSize="middle"
+      [nzPageSize]="10">
+      
+      <thead>
         <tr>
-          <td>{{ data.id }}</td>
-          <td><strong>{{ data.nom }}</strong></td>
-          
-          <td>{{ data.typeCreancier || data.type_creancier }}</td>
-          <td>{{ data.ice }}</td>
-          <td>{{ data.banque }}</td>
-          <td><code>{{ data.rib }}</code></td>
-          <td>{{ data.email }}</td>
-          <td>{{ data.telephone }}</td>
-          
-          <td>{{ (data.createdDate || data.created_date) | date:'dd/MM/yyyy HH:mm' }}</td>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Type</th>
+          <th>ICE</th>
+          <th>Banque</th>
+          <th>RIB</th>
+          <th>Email</th>
+          <th>Téléphone</th>
         </tr>
-      }
-    </tbody>
-    
-  </nz-table>
+      </thead>
+      
+      <tbody>
+        @for (data of basicTable.data; track data.id) {
+          <tr>
+            <td><span style="color: #8c8c8c;">#{{ data.id }}</span></td>
+            <td class="creancier-name" style="font-weight: 500; color: #1890ff;">{{ data.nom }}</td> 
+            <td>
+              <nz-tag [nzColor]="data.typeCreancier === 'BANQUE' ? 'blue' : (data.typeCreancier === 'IAM' ? 'orange' : (data.typeCreancier === 'ONEE' ? 'green' : 'default'))">
+                {{ data.typeCreancier }}
+              </nz-tag>
+            </td>
+            <td><span style="font-family: monospace; color: #595959;">{{ data.ice }}</span></td>
+            <td>{{ data.banque || '-' }}</td>
+            <td><span class="rib-code" style="font-family: monospace; color: #595959;">{{ data.rib || '-' }}</span></td>
+            <td>{{ data.email || '-' }}</td>
+            <td>{{ data.telephone || '-' }}</td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </nz-card>
 </div>
