@@ -23,3 +23,14 @@ export interface CreateCreancier {
     telephone : string
     adresse : string
 }
+export interface CreancierSearchCriteria {
+    nom? : string
+    typeCreancier?: TypeCreancier
+    ice? : string 
+    rc? : string
+    rib? : string
+    banque? : string
+    email? : string
+    telephone? : string
+    adresse? : string
+}

@@ -16,6 +16,18 @@ body {
 body {
   min-width: 320px;
 }
+/* Inside src/styles.css */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5; /* A standard light gray background for enterprise apps */
+}
+
+.main-layout-container {
+  padding: 24px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
 
 .full-width {
   width: 100%;

@@ -1,10 +1,30 @@
-.page-container {
-  padding: 24px;
-  background-color: #f0f2f5;
-  min-height: 100vh;
-}
-
 :host ::ng-deep .ant-card-head-title {
   font-weight: 600;
   font-size: 16px;
+}
+
+.page-container {
+  background-color: transparent; 
+}
+
+.form-card, .table-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+}
+
+.creancier-name {
+  font-weight: 500;
+  color: #1890ff; 
+}
+
+.rib-code {
+  background-color: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #d4380d;
 }

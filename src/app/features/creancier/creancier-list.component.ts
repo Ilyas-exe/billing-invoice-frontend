@@ -12,11 +12,11 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzGridModule } from 'ng-zorro-antd/grid'; // <-- FIX: Added this to make nz-row and nz-col work!
+
 import { CreancierService } from 'src/app/core/services/creancier.service';
-import { Creancier,CreateCreancier } from 'src/app/core/models/creancier.model';
-import { NzDividerComponent } from "ng-zorro-antd/divider";
-
-
+import { Creancier, CreateCreancier, CreancierSearchCriteria } from 'src/app/core/models/creancier.model';
 
 @Component({
   selector: 'app-creancier-list',
@@ -33,21 +33,33 @@ import { NzDividerComponent } from "ng-zorro-antd/divider";
     NzInputModule,
     NzButtonModule,
     NzSelectModule,
-    NzDividerComponent
-], 
+    NzModalModule,
+    NzGridModule // <-- FIX: Registered here
+  ], 
   templateUrl: './creancier-list.component.html',
   styleUrls: ['./creancier-list.component.css']
 })
 export class CreancierListComponent implements OnInit {
   
   private readonly creancierService = inject(CreancierService);
-  private readonly fb = inject(FormBuilder); // Used to build the form
+  private readonly fb = inject(FormBuilder);
 
   creanciers: Creancier[] = [];
-  validateForm!: FormGroup; // Declare the form group
+  
+  validateForm!: FormGroup;
+  searchForm!: FormGroup;
+
+  isAddModalVisible = false;
+  isConfirmLoading = false;
 
   ngOnInit(): void {
-    // 1. Initialize the form and its validation rules
+    this.searchForm = this.fb.group({
+      nom: [null],
+      banque: [null],
+      rib: [null],
+
+    });
+
     this.validateForm = this.fb.group({
       nom: [null, [Validators.required]],
       typeCreancier: [null, [Validators.required]],
@@ -59,7 +71,6 @@ export class CreancierListComponent implements OnInit {
       adresse: [null]
     });
 
-    // 2. Fetch the table data
     this.fetchCreanciers();
   }
 
@@ -72,31 +83,48 @@ export class CreancierListComponent implements OnInit {
     });
   }
 
-  // Handle form submission
+  onSearch(): void {
+    const criteria: CreancierSearchCriteria = this.searchForm.value;
+    this.creancierService.getAllCreancier(criteria).subscribe({
+      next: (data: any) => {
+        this.creanciers = data.content ? data.content : data;
+      },
+      error: (err) => console.error('Erreur de recherche', err)
+    });
+  }
+
+  resetSearch(): void {
+    this.searchForm.reset();
+    this.fetchCreanciers();
+  }
+
+  showAddModal(): void {
+    this.isAddModalVisible = true;
+  }
+
+  handleAddCancel(): void {
+    this.isAddModalVisible = false;
+    this.validateForm.reset();
+  }
+
   submitForm(): void {
     if (this.validateForm.valid) {
-      
-      // 1. Extract the values from the form and cast them to your new interface
+      this.isConfirmLoading = true;
       const payload: CreateCreancier = this.validateForm.value;
 
-      // 2. Call the service to save to the database
       this.creancierService.createCreancier(payload).subscribe({
         next: (response) => {
-          console.log('Créancier créé avec succès:', response);
-          
-          // 3. Reset the form to make it blank again
+          this.isConfirmLoading = false;
+          this.isAddModalVisible = false;
           this.validateForm.reset();
-          
-          // 4. Refresh the table to show the newly added Créancier
           this.fetchCreanciers();
         },
         error: (error) => {
+          this.isConfirmLoading = false;
           console.error('Erreur lors de la création du créancier!', error);
         }
       });
-
     } else {
-      // Show red validation errors if the user forgot a required field
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
           control.markAsDirty();
